@@ -1,0 +1,58 @@
+```mermaid
+erDiagram
+    User ||--o{ BorrowedBook : has
+    Book ||--o{ BorrowedBook : has
+    Book ||--o{ BookAuthor : has
+    Author ||--o{ BookAuthor : has
+    Book ||--o{ BookCategory : has
+    Category ||--o{ BookCategory : has
+
+    User {
+        int id PK
+        string name
+        string email UK
+        string password
+        string role
+        boolean verified
+        string verificationToken
+        datetime deletedAt
+    }
+
+    Book {
+        int id PK
+        string title
+        string isbn UK
+        int copies
+        datetime deletedAt
+    }
+
+    Author {
+        int id PK
+        string name UK
+    }
+
+    Category {
+        int id PK
+        string name UK
+    }
+
+    BookAuthor {
+        int bookId PK,FK
+        int authorId PK,FK
+    }
+
+    BookCategory {
+        int bookId PK,FK
+        int categoryId PK,FK
+    }
+
+    BorrowedBook {
+        int id PK
+        int userId FK
+        int bookId FK
+        datetime borrowedAt
+        datetime dueDate
+        datetime returnedAt
+        float fine
+    }
+```

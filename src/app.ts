@@ -6,6 +6,7 @@ import userRoutes from "./routes/userRoutes";
 import borrowRoutes from "./routes/borrowRoutes";
 import fineRoutes from "./routes/fineRoutes";
 import paymentRoutes from "./routes/paymentRoutes";
+import analyticsRoutes from "./routes/analyticsRoutes"
 import { errorHandler } from "./middlewares/errorMiddleware";
 
 dotenv.config();
@@ -20,6 +21,7 @@ app.use("/users", userRoutes);
 app.use("/borrow", borrowRoutes);
 app.use("/pay", paymentRoutes);
 app.use("/fine", fineRoutes);
+app.use("/analytics", analyticsRoutes);
 
 app.use(errorHandler);
 
