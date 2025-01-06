@@ -2,8 +2,10 @@ import express from "express";
 import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes";
 import bookRoutes from "./routes/bookRoutes";
-import userRoutes from "./routes/userRoutes"
-import borrowRoutes from "./routes/borrowRoutes"
+import userRoutes from "./routes/userRoutes";
+import borrowRoutes from "./routes/borrowRoutes";
+import fineRoutes from "./routes/fineRoutes";
+import paymentRoutes from "./routes/paymentRoutes";
 import { errorHandler } from "./middlewares/errorMiddleware";
 
 dotenv.config();
@@ -16,6 +18,8 @@ app.use("/auth", authRoutes);
 app.use("/books", bookRoutes);
 app.use("/users", userRoutes);
 app.use("/borrow", borrowRoutes);
+app.use("/pay", paymentRoutes);
+app.use("/fine", fineRoutes);
 
 app.use(errorHandler);
 
