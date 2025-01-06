@@ -1,4 +1,5 @@
 import app from "./app";
+import "./schedulers/returnReminder";
 
 const PORT = process.env.PORT || 3000;
 
