@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 Int      @id @default(autoincrement())
+  name               String
+  email              String   @unique
+  password           String
+  role               String  
+  verified           Boolean  @default(false)
+  verificationToken  String?  
+  deletedAt          DateTime? @db.Timestamp(6)
+  BorrowedBooks      BorrowedBook[]
+}
+
+model Book {
+  id          Int        @id @default(autoincrement())
+  title       String
+  isbn        String     @unique
+  copies      Int
+  deletedAt   DateTime? @db.Timestamp(6)
+  Authors     BookAuthor[]
+  Categories  BookCategory[]
+  BorrowedBooks BorrowedBook[]
+}
+
+model Author {
+  id   Int    @id @default(autoincrement())
+  name String 
+  Books BookAuthor[]
+}
+
+model Category {
+  id   Int    @id @default(autoincrement())
+  name String
+  Books BookCategory[]
+}
+
+model BookAuthor {
+  bookId   Int
+  authorId Int
+  Book     Book   @relation(fields: [bookId], references: [id])
+  Author   Author @relation(fields: [authorId], references: [id])
+  @@id([bookId, authorId])
+}
+
+model BookCategory {
+  bookId      Int
+  categoryId  Int
+  Book        Book      @relation(fields: [bookId], references: [id])
+  Category    Category  @relation(fields: [categoryId], references: [id])
+  @@id([bookId, categoryId])
+}
+
+model BorrowedBook {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  bookId    Int
+  borrowedAt DateTime @default(now())
+  dueDate   DateTime
+  returnedAt DateTime?
+  fine      Float    @default(0)
+  User      User     @relation(fields: [userId], references: [id])
+  Book      Book     @relation(fields: [bookId], references: [id])
+}
