@@ -13,6 +13,7 @@ The Library Management System is a web application designed to manage the borrow
 - **Admin Features**: Admins can add, edit, and delete books from the inventory.
 - **Analytics**: The system provides analytics on the most borrowed books and monthly usage reports.
 - **Email Notifications**: Users receive email notifications when a borrowed book is nearing its return date, helping them to avoid late returns and associated fines.
+- **Caching with Redis**: The application uses Redis for caching book details to improve performance. When a book is requested, the system first checks the cache before querying the database.
 
 ## Database Design
 
@@ -97,6 +98,7 @@ erDiagram
 - PostgreSQL
 - JWT for authentication
 - Zod for input validation
+- Redis for caching
 - Nodemailer (or similar) for sending emails
 
 ## Setup Instructions
@@ -133,13 +135,23 @@ To set up the project locally, follow these steps:
    npx prisma migrate dev --name init
    ```
 
-5. **Build the Project**:
+5. **Start Redis**:
+   Make sure you have Redis installed and running. Start Redis with the following command:
+   ```bash
+   redis-server
+   ```
+   You can monitor the Redis cache by running:
+   ```bash
+   redis-cli monitor
+   ```
+
+6. **Build the Project**:
    Compile the TypeScript code to JavaScript:
    ```bash
    npx tsc -b
    ```
 
-6. **Run the Application**:
+7. **Run the Application**:
    You can run the application using either of the following commands:
    ```bash
    node dist/index.js
@@ -171,6 +183,10 @@ To set up the project locally, follow these steps:
   - `POST /books`: Add a new book (admin only).
   - `PUT /books/:id`: Edit a book (admin only).
   - `DELETE /books/:id`: Delete a book (admin only).
+
+- **Analytics Routes**:
+  - `GET /analytics/most-borrowed`: Get the most borrowed books (admin only).
+  - `GET /analytics/monthly-report`: Generate a monthly usage report (admin only).
 
 ## Conclusion
 
