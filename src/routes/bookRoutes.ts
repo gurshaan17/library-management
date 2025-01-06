@@ -7,11 +7,12 @@ import {
   searchBooks,
 } from "../controllers/bookController";
 import { adminOnly, authenticate } from "../middlewares/authMiddleware";
+import { cacheMiddleware } from "../middlewares/cacheMiddleware";
 
 const router = Router();
 
 
-router.get("/:isbnOrTitle", getBookDetails);
+router.get("/:isbnOrTitle", cacheMiddleware("bookDetails"), getBookDetails);
 router.get("/", searchBooks);
 router.post("/", authenticate, adminOnly, addBook);
 router.put("/:id", authenticate, adminOnly, editBook);

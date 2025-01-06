@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { z } from "zod";
 import prisma from "../config/database";
+import redisClient from "../config/redis";
 
 const addBookSchema = z.object({
   title: z.string(),
@@ -119,9 +120,17 @@ export const deleteBook = async (req: Request, res: Response) => {
 };
 
 export const getBookDetails = async (req: Request, res: Response) => {
-  try {
-    const { isbnOrTitle } = req.params;
+  const { isbnOrTitle } = req.params;
 
+  const cacheKey = `bookDetails:${JSON.stringify({ isbnOrTitle })}`;
+  const cachedData = await redisClient.get(cacheKey);
+
+  if (cachedData) {
+    res.status(200).json(JSON.parse(cachedData));
+    return;
+  }
+
+  try {
     const book = await prisma.book.findFirst({
       where: {
         OR: [
@@ -136,11 +145,20 @@ export const getBookDetails = async (req: Request, res: Response) => {
       },
     });
 
-    if (!book)  res.status(404).json({ error: "Book not found" });
+    if (!book){
+      res.status(404).json({ error: "Book not found" });
+      return;
+    }
+
+    await redisClient.set(cacheKey, JSON.stringify(book), {
+      EX: 3600,
+    });
 
     res.status(200).json(book);
+    return;
   } catch (err: any) {
-    res.status(400).json({ error: err.message });
+    res.status(500).json({ error: err.message });
+    return;
   }
 };
 
