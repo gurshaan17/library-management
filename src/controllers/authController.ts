@@ -44,17 +44,25 @@ export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
     const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) return res.status(404).json({ error: "User not found" });
+    if (!user) {
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
 
     const valid = await bcrypt.compare(password, user.password);
-    if (!valid) return res.status(401).json({ error: "Invalid credentials" });
+    if (!valid) {
+      res.status(401).json({ error: "Invalid credentials" });
+      return;
+    }
 
     const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET!, {
       expiresIn: "1d",
     });
     res.status(200).json({ token });
+    return;
   } catch (err: any) {
     res.status(400).json({ error: err.message });
+    return;
   }
 };
 
@@ -62,17 +70,20 @@ export const verifyEmail = async (req: Request, res: Response) => {
   try {
     const { token } = req.query;
     if (Array.isArray(token)) {
-      return res.status(400).json({ error: "Invalid verification token" });
+      res.status(400).json({ error: "Invalid verification token" });
+      return;
     }
 
     if (typeof token !== "string") {
-      return res.status(400).json({ error: "Invalid verification token" });
+      res.status(400).json({ error: "Invalid verification token" });
+      return;
     }
     const user = await prisma.user.findFirst({
       where: { verificationToken: token },
     });
     if (!user) {
-      return res.status(400).json({ error: "Invalid or expired token" });
+      res.status(400).json({ error: "Invalid or expired token" });
+      return;
     }
     await prisma.user.update({
       where: { id: user.id },

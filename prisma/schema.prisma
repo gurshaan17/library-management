@@ -32,13 +32,13 @@ model Book {
 
 model Author {
   id   Int    @id @default(autoincrement())
-  name String 
+  name String @unique
   Books BookAuthor[]
 }
 
 model Category {
   id   Int    @id @default(autoincrement())
-  name String
+  name String @unique
   Books BookCategory[]
 }
 

@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes";
 import bookRoutes from "./routes/bookRoutes";
+import userRoutes from "./routes/userRoutes"
 import { errorHandler } from "./middlewares/errorMiddleware";
 
 dotenv.config();
@@ -12,6 +13,7 @@ app.use(express.json());
 
 app.use("/auth", authRoutes);
 app.use("/books", bookRoutes);
+app.use("/users", userRoutes);
 
 app.use(errorHandler);
 
