@@ -6,12 +6,15 @@ import userRoutes from "./routes/userRoutes";
 import borrowRoutes from "./routes/borrowRoutes";
 import fineRoutes from "./routes/fineRoutes";
 import paymentRoutes from "./routes/paymentRoutes";
-import analyticsRoutes from "./routes/analyticsRoutes"
+import analyticsRoutes from "./routes/analyticsRoutes";
+import { generalRateLimiter } from "./middlewares/rateLimitMiddleware";
 import { errorHandler } from "./middlewares/errorMiddleware";
 
 dotenv.config();
 
 const app = express();
+
+app.use(generalRateLimiter);
 
 app.use(express.json());
 
