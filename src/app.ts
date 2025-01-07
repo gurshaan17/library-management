@@ -1,5 +1,6 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import dotenv from "dotenv";
+import cors from "cors";
 import authRoutes from "./routes/authRoutes";
 import bookRoutes from "./routes/bookRoutes";
 import userRoutes from "./routes/userRoutes";
@@ -18,6 +19,11 @@ app.use(generalRateLimiter);
 
 app.use(express.json());
 
+app.use(cors());
+
+app.get("/",(req: Request, res: Response) => {
+    res.status(200).json({server: "healthy"})
+})
 app.use("/auth", authRoutes);
 app.use("/books", bookRoutes);
 app.use("/users", userRoutes);
