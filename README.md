@@ -99,7 +99,7 @@ erDiagram
 - JWT for authentication
 - Zod for input validation
 - Redis for caching
-- Nodemailer (or similar) for sending emails
+- Nodemailer for sending emails
 
 ## Setup Instructions
 
@@ -107,8 +107,8 @@ To set up the project locally, follow these steps:
 
 1. **Clone the Repository**:
    ```bash
-   git clone github.com/gurshaan17/library-management-system
-   cd library-management-system
+   git clone github.com/gurshaan17/library-management
+   cd library-management
    ```
 
 2. **Install Dependencies**:
