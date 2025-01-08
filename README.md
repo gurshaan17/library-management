@@ -165,28 +165,162 @@ To set up the project locally, follow these steps:
 
 - **User Routes**:
   - `GET /users/:id`: Get user details.
+    - **Description**: Retrieves details of a user by their ID.
+    - **Parameters**: 
+      - `id`: User ID (in the URL).
+    - **Example Request**: 
+      ```
+      GET /users/1
+      ```
+  
   - `GET /users/:id/borrowed-books`: Get borrowed books for a user.
+    - **Description**: Retrieves a list of books borrowed by a user.
+    - **Parameters**: 
+      - `id`: User ID (in the URL).
+    - **Example Request**: 
+      ```
+      GET /users/1/borrowed-books
+      ```
+
   - `PATCH /users/:id/enable-disable`: Enable or disable a user account.
+    - **Description**: Enables or disables a user account.
+    - **Parameters**: 
+      - `id`: User ID (in the URL).
+    - **Request Body**:
+      ```json
+      {
+        "enabled": true // or false
+      }
+      ```
+    - **Example Request**: 
+      ```
+      PATCH /users/1/enable-disable
+      ```
 
 - **Borrow Routes**:
   - `POST /borrow`: Borrow a book.
+    - **Description**: Allows a user to borrow a book.
+    - **Request Body**:
+      ```json
+      {
+        "bookId": 1 // ID of the book to borrow
+      }
+      ```
+    - **Example Request**: 
+      ```
+      POST /borrow
+      ```
+
   - `POST /borrow/return`: Return a borrowed book.
+    - **Description**: Allows a user to return a borrowed book.
+    - **Request Body**:
+      ```json
+      {
+        "bookId": 1 // ID of the book to return
+      }
+      ```
+    - **Example Request**: 
+      ```
+      POST /borrow/return
+      ```
+
   - `GET /borrow/limit`: Check borrowing limit.
+    - **Description**: Retrieves the current borrowing limit and count for the user.
+    - **Example Request**: 
+      ```
+      GET /borrow/limit
+      ```
 
 - **Fine Routes**:
   - `GET /fine/calculate/:borrowedBookId`: Calculate fine for a borrowed book.
+    - **Description**: Calculates the fine for a specific borrowed book.
+    - **Parameters**: 
+      - `borrowedBookId`: ID of the borrowed book (in the URL).
+    - **Example Request**: 
+      ```
+      GET /fine/calculate/1
+      ```
+
   - `GET /fine/total`: Get total fines for a user.
+    - **Description**: Retrieves the total fines for the authenticated user.
+    - **Example Request**: 
+      ```
+      GET /fine/total
+      ```
 
 - **Book Routes**:
   - `GET /books/:isbnOrTitle`: Get book details by ISBN or title.
+    - **Description**: Retrieves details of a book by its ISBN or title.
+    - **Parameters**: 
+      - `isbnOrTitle`: ISBN or title of the book (in the URL).
+    - **Example Request**: 
+      ```
+      GET /books/1234567890
+      ```
+
   - `GET /books`: Search for books.
+    - **Description**: Searches for books based on query parameters.
+    - **Example Request**: 
+      ```
+      GET /books?title=Harry Potter
+      ```
+
   - `POST /books`: Add a new book (admin only).
+    - **Description**: Adds a new book to the inventory.
+    - **Request Body**:
+      ```json
+      {
+        "title": "New Book Title",
+        "isbn": "1234567890",
+        "copies": 5,
+        "authors": ["Author Name"],
+        "categories": ["Category Name"]
+      }
+      ```
+    - **Example Request**: 
+      ```
+      POST /books
+      ```
+
   - `PUT /books/:id`: Edit a book (admin only).
+    - **Description**: Edits the details of an existing book.
+    - **Parameters**: 
+      - `id`: ID of the book (in the URL).
+    - **Request Body**:
+      ```json
+      {
+        "title": "Updated Book Title",
+        "copies": 10
+      }
+      ```
+    - **Example Request**: 
+      ```
+      PUT /books/1
+      ```
+
   - `DELETE /books/:id`: Delete a book (admin only).
+    - **Description**: Deletes a book from the inventory.
+    - **Parameters**: 
+      - `id`: ID of the book (in the URL).
+    - **Example Request**: 
+      ```
+      DELETE /books/1
+      ```
 
 - **Analytics Routes**:
   - `GET /analytics/most-borrowed`: Get the most borrowed books (admin only).
+    - **Description**: Retrieves a list of the most borrowed books.
+    - **Example Request**: 
+      ```
+      GET /analytics/most-borrowed
+      ```
+
   - `GET /analytics/monthly-report`: Generate a monthly usage report (admin only).
+    - **Description**: Generates a report of book usage for a specific month.
+    - **Example Request**: 
+      ```
+      GET /analytics/monthly-report?month=1&year=2023
+      ```
 
 ## Conclusion
 
