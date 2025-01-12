@@ -11,6 +11,41 @@ const addBookSchema = z.object({
   categories: z.array(z.string()),
 });
 
+/**
+ * @swagger
+ * /books:
+ *   post:
+ *     summary: Add a new book
+ *     tags: [Books]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               isbn:
+ *                 type: string
+ *               copies:
+ *                 type: integer
+ *               authors:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *               categories:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *     responses:
+ *       201:
+ *         description: Book added successfully
+ *       400:
+ *         description: Invalid input data
+ *       500:
+ *         description: Internal server error
+ */
 export const addBook = async (req: Request, res: Response) => {
   try {
     const data = addBookSchema.parse(req.body);
@@ -57,6 +92,50 @@ const editBookSchema = z.object({
   categories: z.array(z.string()).optional(),
 });
 
+/**
+ * @swagger
+ * /books/{id}:
+ *   put:
+ *     summary: Edit an existing book
+ *     tags: [Books]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the book to edit
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               isbn:
+ *                 type: string
+ *               copies:
+ *                 type: integer
+ *               authors:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *               categories:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *     responses:
+ *       200:
+ *         description: Book updated successfully
+ *       400:
+ *         description: Invalid input data
+ *       404:
+ *         description: Book not found
+ *       500:
+ *         description: Internal server error
+ */
 export const editBook = async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id);
@@ -103,6 +182,27 @@ export const editBook = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * @swagger
+ * /books/{id}:
+ *   delete:
+ *     summary: Delete a book
+ *     tags: [Books]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the book to delete
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Book deleted successfully
+ *       404:
+ *         description: Book not found
+ *       500:
+ *         description: Internal server error
+ */
 export const deleteBook = async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id);
@@ -119,6 +219,27 @@ export const deleteBook = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * @swagger
+ * /books/{isbnOrTitle}:
+ *   get:
+ *     summary: Get details of a book by ISBN or title
+ *     tags: [Books]
+ *     parameters:
+ *       - in: path
+ *         name: isbnOrTitle
+ *         required: true
+ *         description: ISBN or title of the book to retrieve
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Book details retrieved successfully
+ *       404:
+ *         description: Book not found
+ *       500:
+ *         description: Internal server error
+ */
 export const getBookDetails = async (req: Request, res: Response) => {
   const { isbnOrTitle } = req.params;
 
@@ -162,6 +283,37 @@ export const getBookDetails = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * @swagger
+ * /books/search:
+ *   get:
+ *     summary: Search for books
+ *     tags: [Books]
+ *     parameters:
+ *       - in: query
+ *         name: category
+ *         required: false
+ *         description: Category to filter books
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: author
+ *         required: false
+ *         description: Author to filter books
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: available
+ *         required: false
+ *         description: Filter for available books
+ *         schema:
+ *           type: boolean
+ *     responses:
+ *       200:
+ *         description: List of books matching the search criteria
+ *       500:
+ *         description: Internal server error
+ */
 export const searchBooks = async (req: Request, res: Response) => {
   try {
     const { category, author, available } = req.query;

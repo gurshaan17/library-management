@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import swaggerUi from "swagger-ui-express";
 import authRoutes from "./routes/authRoutes";
 import bookRoutes from "./routes/bookRoutes";
 import userRoutes from "./routes/userRoutes";
@@ -10,6 +11,7 @@ import paymentRoutes from "./routes/paymentRoutes";
 import analyticsRoutes from "./routes/analyticsRoutes";
 import { generalRateLimiter } from "./middlewares/rateLimitMiddleware";
 import { errorHandler } from "./middlewares/errorMiddleware";
+import swaggerDocs from "./config/swagger";
 
 dotenv.config();
 
@@ -20,6 +22,8 @@ app.use(generalRateLimiter);
 app.use(express.json());
 
 app.use(cors());
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.get("/",(req: Request, res: Response) => {
     res.status(200).json({server: "healthy"})

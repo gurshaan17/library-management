@@ -1,6 +1,31 @@
 import { Request, Response } from "express";
 import prisma from "../config/database";
 
+/**
+ * @swagger
+ * /borrow:
+ *   post:
+ *     summary: Borrow a book
+ *     tags: [Borrow]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               bookId:
+ *                 type: integer
+ *     responses:
+ *       200:
+ *         description: Book borrowed successfully
+ *       400:
+ *         description: Borrowing limit reached or book not available
+ *       404:
+ *         description: Book not found
+ *       500:
+ *         description: Internal server error
+ */
 export const borrowBook = async (req: Request, res: Response) => {
   try {
     const { bookId } = req.body;
@@ -35,7 +60,38 @@ export const borrowBook = async (req: Request, res: Response) => {
   }
 };
 
-
+/**
+ * @swagger
+ * /borrow/return:
+ *   post:
+ *     summary: Return a borrowed book
+ *     tags: [Borrow]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               bookId:
+ *                 type: integer
+ *     responses:
+ *       200:
+ *         description: Book returned successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 fine:
+ *                   type: number
+ *       404:
+ *         description: Borrowing record not found
+ *       500:
+ *         description: Internal server error
+ */
 export const returnBook = async (req: Request, res: Response) => {
     try {
       const { bookId } = req.body;
@@ -67,7 +123,29 @@ export const returnBook = async (req: Request, res: Response) => {
     }
 };
 
-
+/**
+ * @swagger
+ * /borrow/limit:
+ *   get:
+ *     summary: Check the borrowing limit for the authenticated user
+ *     tags: [Borrow]
+ *     responses:
+ *       200:
+ *         description: Borrowing limit retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 borrowingLimit:
+ *                   type: integer
+ *                 borrowedCount:
+ *                   type: integer
+ *                 remaining:
+ *                   type: integer
+ *       500:
+ *         description: Internal server error
+ */
 export const checkBorrowingLimit = async (req: Request, res: Response) => {
     try {
         //@ts-ignore

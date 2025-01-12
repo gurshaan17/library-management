@@ -1,6 +1,50 @@
 import { Request, Response } from "express";
 import prisma from "../config/database";
 
+/**
+ * @swagger
+ * /pay:
+ *   post:
+ *     summary: Pay a fine for a borrowed book
+ *     tags: [Payment]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               borrowedBookId:
+ *                 type: integer
+ *               amount:
+ *                 type: number
+ *     responses:
+ *       200:
+ *         description: Fine paid successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 transaction:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                     amount:
+ *                       type: number
+ *                     paymentDate:
+ *                       type: string
+ *                       format: date-time
+ *       400:
+ *         description: Invalid input or insufficient payment
+ *       404:
+ *         description: Borrowing record not found
+ *       500:
+ *         description: Internal server error
+ */
 export const payFine = async (req: Request, res: Response) => {
   try {
     const { borrowedBookId, amount } = req.body;
@@ -45,6 +89,55 @@ export const payFine = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * @swagger
+ * /invoice/{id}:
+ *   get:
+ *     summary: Generate an invoice for a transaction
+ *     tags: [Payment]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the transaction to generate an invoice for
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Invoice generated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 transactionId:
+ *                   type: integer
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     name:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                 book:
+ *                   type: object
+ *                   properties:
+ *                     title:
+ *                       type: string
+ *                     isbn:
+ *                       type: string
+ *                 amount:
+ *                   type: number
+ *                 paymentDate:
+ *                   type: string
+ *                   format: date-time
+ *       400:
+ *         description: Invalid transaction ID
+ *       404:
+ *         description: Transaction not found
+ *       500:
+ *         description: Internal server error
+ */
 export const generateInvoice = async (req: Request, res: Response) => {
     try {
       const transactionId = parseInt(req.params.id);

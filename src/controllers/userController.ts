@@ -1,7 +1,40 @@
 import { Request, Response } from "express";
 import prisma from "../config/database";
 
-
+/**
+ * @swagger
+ * /users/{id}:
+ *   get:
+ *     summary: Get user details
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the user to retrieve
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: User details retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                 name:
+ *                   type: string
+ *                 email:
+ *                   type: string
+ *                 role:
+ *                   type: string
+ *                 verified:
+ *                   type: boolean
+ *       404:
+ *         description: User not found
+ */
 export const getUserDetails = async (req: Request, res: Response): Promise<void> => {
   try {
     const id = parseInt(req.params.id);
@@ -37,7 +70,46 @@ export const getUserDetails = async (req: Request, res: Response): Promise<void>
   }
 };
 
-
+/**
+ * @swagger
+ * /users/{id}/borrowed-books:
+ *   get:
+ *     summary: Get borrowed books and fines for a user
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the user to retrieve borrowed books for
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: List of borrowed books and total fines
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 borrowedBooks:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                       title:
+ *                         type: string
+ *                       dueDate:
+ *                         type: string
+ *                         format: date
+ *                 totalFine:
+ *                   type: integer
+ *       403:
+ *         description: Access denied
+ *       404:
+ *         description: User not found
+ */
 export const trackBorrowedBooksAndFines = async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id);
@@ -77,28 +149,59 @@ export const trackBorrowedBooksAndFines = async (req: Request, res: Response) =>
   }
 };
 
-
-  export const enableDisableUserAccount = async (req: Request, res: Response) => {
-    try {
-      const id = parseInt(req.params.id);
-      if (isNaN(id)) {
-        res.status(400).json({ error: "Invalid user ID" });
-        return;
-      }
-      const { disabled } = req.body;
-      if (typeof disabled !== "boolean") {
-        res.status(400).json({ error: "Invalid value for 'disabled'" });
-        return;
-      }
-      const user = await prisma.user.update({
-        where: { id },
-        data: { deletedAt: disabled ? new Date() : null },
-      });
-      res.status(200).json({
-        message: `User account has been ${disabled ? "disabled" : "enabled"}`,
-        user,
-      });
-    } catch (err: any) {
-      res.status(500).json({ error: err.message });
+/**
+ * @swagger
+ * /users/{id}/enable-disable:
+ *   patch:
+ *     summary: Enable or disable a user account
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the user to enable or disable
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               disabled:
+ *                 type: boolean
+ *     responses:
+ *       200:
+ *         description: User account status updated successfully
+ *       400:
+ *         description: Invalid input
+ *       403:
+ *         description: Access denied
+ *       404:
+ *         description: User not found
+ */
+export const enableDisableUserAccount = async (req: Request, res: Response) => {
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) {
+      res.status(400).json({ error: "Invalid user ID" });
+      return;
     }
+    const { disabled } = req.body;
+    if (typeof disabled !== "boolean") {
+      res.status(400).json({ error: "Invalid value for 'disabled'" });
+      return;
+    }
+    const user = await prisma.user.update({
+      where: { id },
+      data: { deletedAt: disabled ? new Date() : null },
+    });
+    res.status(200).json({
+      message: `User account has been ${disabled ? "disabled" : "enabled"}`,
+      user,
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
 };

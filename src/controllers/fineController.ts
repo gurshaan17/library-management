@@ -1,6 +1,38 @@
 import { Request, Response } from "express";
 import prisma from "../config/database";
 
+/**
+ * @swagger
+ * /fine/calculate/{borrowedBookId}:
+ *   get:
+ *     summary: Calculate the fine for a borrowed book
+ *     tags: [Fine]
+ *     parameters:
+ *       - in: path
+ *         name: borrowedBookId
+ *         required: true
+ *         description: ID of the borrowed book to calculate the fine for
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Fine calculated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 overdueDays:
+ *                   type: integer
+ *                 fine:
+ *                   type: number
+ *       400:
+ *         description: Invalid borrowed book ID
+ *       404:
+ *         description: Borrowed book not found
+ *       500:
+ *         description: Internal server error
+ */
 export const calculateFine = async (req: Request, res: Response) => {
   try {
     const borrowedBookId = parseInt(req.params.borrowedBookId);
@@ -32,6 +64,25 @@ export const calculateFine = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * @swagger
+ * /fine/total:
+ *   get:
+ *     summary: Get the total fine for the authenticated user
+ *     tags: [Fine]
+ *     responses:
+ *       200:
+ *         description: Total fine retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 totalFine:
+ *                   type: number
+ *       500:
+ *         description: Internal server error
+ */
 export const getTotalFine = async (req: Request, res: Response) => {
     try {
       //@ts-ignore

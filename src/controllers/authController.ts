@@ -6,6 +6,36 @@ import crypto from "crypto";
 import prisma from "../config/database";
 import { sendEmail } from "../config/email";
 
+/**
+ * @swagger
+ * /auth/register:
+ *   post:
+ *     summary: Register a new user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               password:
+ *                 type: string
+ *                 minLength: 6
+ *               role:
+ *                 type: string
+ *                 enum: [admin, member]
+ *     responses:
+ *       201:
+ *         description: User registered successfully. Verification email sent.
+ *       400:
+ *         description: Invalid input data.
+ */
 const registerSchema = z.object({
   name: z.string(),
   email: z.string().email(),
@@ -40,6 +70,39 @@ export const register = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * @swagger
+ * /auth/login:
+ *   post:
+ *     summary: Login a user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: User logged in successfully. Returns a JWT token.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *       404:
+ *         description: User not found.
+ *       401:
+ *         description: Invalid credentials.
+ */
 export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
@@ -66,6 +129,27 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * @swagger
+ * /auth/verify-email:
+ *   get:
+ *     summary: Verify user email
+ *     tags: [Auth]
+ *     parameters:
+ *       - in: query
+ *         name: token
+ *         required: true
+ *         description: Verification token sent to the user's email
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Email verified successfully.
+ *       400:
+ *         description: Invalid or expired token.
+ *       500:
+ *         description: Internal server error.
+ */
 export const verifyEmail = async (req: Request, res: Response) => {
   try {
     const { token } = req.query;
