@@ -285,32 +285,13 @@ export const getBookDetails = async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /books/search:
+ * /books:
  *   get:
- *     summary: Search for books
+ *     summary: Lists all the books
  *     tags: [Books]
- *     parameters:
- *       - in: query
- *         name: category
- *         required: false
- *         description: Category to filter books
- *         schema:
- *           type: string
- *       - in: query
- *         name: author
- *         required: false
- *         description: Author to filter books
- *         schema:
- *           type: string
- *       - in: query
- *         name: available
- *         required: false
- *         description: Filter for available books
- *         schema:
- *           type: boolean
  *     responses:
  *       200:
- *         description: List of books matching the search criteria
+ *         description: List of all the available books with more than 1 copy
  *       500:
  *         description: Internal server error
  */
