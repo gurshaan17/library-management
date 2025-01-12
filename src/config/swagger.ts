@@ -11,6 +11,11 @@ const swaggerOptions = {
     servers: [
       {
         url: "http://localhost:3000",
+        description: "Local Development",
+      },
+      {
+        url: "https://library-management-lysi.onrender.com",
+        description: "Production",
       },
     ],
   },
