@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import prisma from "../config/database";
 
+interface CustomRequest extends Request {
+  user?: any; 
+}
+
 /**
  * @swagger
  * /pay:
@@ -45,10 +49,9 @@ import prisma from "../config/database";
  *       500:
  *         description: Internal server error
  */
-export const payFine = async (req: Request, res: Response) => {
+export const payFine = async (req: CustomRequest, res: Response) => {
   try {
     const { borrowedBookId, amount } = req.body;
-    //@ts-ignore
     const userId = req.user.id;
     const borrowedBook = await prisma.borrowedBook.findFirst({
       where: { id: borrowedBookId, userId },

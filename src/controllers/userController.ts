@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import prisma from "../config/database";
 
+interface CustomRequest extends Request {
+  user?: any; 
+}
+
 /**
  * @swagger
  * /users/{id}:
@@ -35,10 +39,9 @@ import prisma from "../config/database";
  *       404:
  *         description: User not found
  */
-export const getUserDetails = async (req: Request, res: Response): Promise<void> => {
+export const getUserDetails = async (req: CustomRequest, res: Response): Promise<void> => {
   try {
     const id = parseInt(req.params.id);
-    //@ts-ignore
     const userId = req.user?.id;
     if (userId !== id) {
       res.status(403).json({ error: "Access denied: You can only access your own data." });
@@ -110,10 +113,9 @@ export const getUserDetails = async (req: Request, res: Response): Promise<void>
  *       404:
  *         description: User not found
  */
-export const trackBorrowedBooksAndFines = async (req: Request, res: Response) => {
+export const trackBorrowedBooksAndFines = async (req: CustomRequest, res: Response) => {
   try {
     const id = parseInt(req.params.id);
-    //@ts-ignore
     const userId = req.user?.id;
 
     if (userId !== id) {

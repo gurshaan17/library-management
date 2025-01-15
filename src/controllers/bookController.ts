@@ -55,7 +55,6 @@ export const addBook = async (req: Request, res: Response) => {
         isbn: data.isbn,
         copies: data.copies,
         Authors: {
-          //@ts-ignore
           create: data.authors.map((name) => ({
             Author: { 
               connectOrCreate: { 
@@ -66,7 +65,6 @@ export const addBook = async (req: Request, res: Response) => {
           })),
         },
         Categories: {
-          //@ts-ignore
           create: data.categories.map((name) => ({
             Category: { 
               connectOrCreate: { 

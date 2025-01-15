@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import prisma from "../config/database";
 
+interface CustomRequest extends Request {
+  user?: any; 
+}
+
 /**
  * @swagger
  * /borrow:
@@ -26,10 +30,9 @@ import prisma from "../config/database";
  *       500:
  *         description: Internal server error
  */
-export const borrowBook = async (req: Request, res: Response) => {
+export const borrowBook = async (req: CustomRequest, res: Response) => {
   try {
     const { bookId } = req.body;
-    //@ts-ignore
     const userId = req.user?.id;
     const borrowedCount = await prisma.borrowedBook.count({
       where: { userId, returnedAt: null },
@@ -92,10 +95,9 @@ export const borrowBook = async (req: Request, res: Response) => {
  *       500:
  *         description: Internal server error
  */
-export const returnBook = async (req: Request, res: Response) => {
+export const returnBook = async (req: CustomRequest, res: Response) => {
     try {
       const { bookId } = req.body;
-      //@ts-ignore
       const userId = req.user?.id;
       const borrowedBook = await prisma.borrowedBook.findFirst({
         where: { userId, bookId, returnedAt: null },
@@ -146,9 +148,8 @@ export const returnBook = async (req: Request, res: Response) => {
  *       500:
  *         description: Internal server error
  */
-export const checkBorrowingLimit = async (req: Request, res: Response) => {
+export const checkBorrowingLimit = async (req: CustomRequest, res: Response) => {
     try {
-        //@ts-ignore
     const userId = req.user?.id;
     const borrowedCount = await prisma.borrowedBook.count({
         where: { userId, returnedAt: null },

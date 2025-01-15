@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import prisma from "../config/database";
 
+interface CustomRequest extends Request {
+  user?: any; 
+}
+
 /**
  * @swagger
  * /fine/calculate/{borrowedBookId}:
@@ -83,9 +87,8 @@ export const calculateFine = async (req: Request, res: Response) => {
  *       500:
  *         description: Internal server error
  */
-export const getTotalFine = async (req: Request, res: Response) => {
+export const getTotalFine = async (req: CustomRequest, res: Response) => {
     try {
-      //@ts-ignore
       const userId = req.user.id;
       const borrowedBooks = await prisma.borrowedBook.findMany({
         where: { userId, returnedAt: null },
